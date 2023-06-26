@@ -59,9 +59,9 @@ library(mvnfast)
 
 # Simulation parameters
 n <- 50
-p <- 500
+p <- 250
 rho <- 0.8
-p.active <- 100
+p.active <- 50
 snr <- 3
 contamination.prop <- 0.2
 
@@ -105,7 +105,8 @@ ensemble_fit <- robStepSplitReg(x_train, y_train,
                                 robust = TRUE,
                                 compute_coef = TRUE,
                                 pense_alpha = 1/4, pense_cv_k = 5, pense_cv_repl = 1,
-                                cl = NULL)
+                                cl = NULL,
+                                enpy_opts = pense::enpy_options(retain_max = 50))
 
 # Ensemble coefficients
 ensemble_coefs <- coef(ensemble_fit, group_index = 1:ensemble_fit$n_models)

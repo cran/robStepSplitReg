@@ -36,9 +36,9 @@
 #' 
 #' # Simulation parameters
 #' n <- 50
-#' p <- 500
+#' p <- 250
 #' rho <- 0.8
-#' p.active <- 100
+#' p.active <- 50
 #' snr <- 3
 #' contamination.prop <- 0.2
 #' 
@@ -82,7 +82,8 @@
 #'                                 robust = TRUE,
 #'                                 compute_coef = TRUE,
 #'                                 pense_alpha = 1/4, pense_cv_k = 5, pense_cv_repl = 1,
-#'                                 cl = NULL)
+#'                                 cl = NULL,
+#'                                 enpy_opts = pense::enpy_options(retain_max = 50))
 #' 
 #' # Ensemble coefficients
 #' ensemble_coefs <- coef(ensemble_fit, group_index = 1:ensemble_fit$n_models)
@@ -151,9 +152,8 @@ robStepSplitReg <- function(x, y,
     
     # Computation of correlations for predictors and response
     xy.std <- cbind(x.std, y.std)
-    est_xy <- cellWise::estLocScale(xy.std)
-    xy_wrap <- cellWise::wrap(xy.std, est_xy$loc, est_xy$scale, checkPars = list(silent = TRUE))$Xw
-    rob.cor <- cor(xy_wrap)
+    DDCxy <- cellWise::DDC(xy.std, DDCpars = list(fastDDC = TRUE, silent = TRUE))
+    rob.cor <- cor(DDCxy$Ximp)
     correlation.predictors <- rob.cor[-nrow(rob.cor),-ncol(rob.cor)]
     correlation.response <- rob.cor[-nrow(rob.cor), ncol(rob.cor)]
     
